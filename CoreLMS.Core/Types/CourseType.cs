@@ -6,7 +6,8 @@ namespace CoreLMS.Core.Types
 {
     public enum CourseType
     {
-        OnDemand = 1000,
+        OnDemandSimple = 1000,
+        OnDemandComplex = 1001,
         LiveWebinar = 2000
     }
 }

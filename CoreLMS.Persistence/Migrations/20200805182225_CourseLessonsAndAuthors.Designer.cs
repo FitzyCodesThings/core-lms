@@ -4,14 +4,16 @@ using CoreLMS.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CoreLMS.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200805182225_CourseLessonsAndAuthors")]
+    partial class CourseLessonsAndAuthors
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -49,21 +51,6 @@ namespace CoreLMS.Persistence.Migrations
                     b.HasIndex("PersonID");
 
                     b.ToTable("Authors");
-                });
-
-            modelBuilder.Entity("CoreLMS.Core.Entities.AuthorCourseLesson", b =>
-                {
-                    b.Property<int>("AuthorId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CourseLessonId")
-                        .HasColumnType("int");
-
-                    b.HasKey("AuthorId", "CourseLessonId");
-
-                    b.HasIndex("CourseLessonId");
-
-                    b.ToTable("AuthorCourseLessons");
                 });
 
             modelBuilder.Entity("CoreLMS.Core.Entities.Course", b =>
@@ -216,21 +203,6 @@ namespace CoreLMS.Persistence.Migrations
                     b.HasOne("CoreLMS.Core.Entities.Person", "Person")
                         .WithMany()
                         .HasForeignKey("PersonID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("CoreLMS.Core.Entities.AuthorCourseLesson", b =>
-                {
-                    b.HasOne("CoreLMS.Core.Entities.Author", "Author")
-                        .WithMany("CourseLessons")
-                        .HasForeignKey("AuthorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("CoreLMS.Core.Entities.CourseLesson", "CourseLesson")
-                        .WithMany("Authors")
-                        .HasForeignKey("CourseLessonId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

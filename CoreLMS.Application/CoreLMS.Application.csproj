@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Services\" />
+    <ProjectReference Include="..\CoreLMS.Core\CoreLMS.Core.csproj" />
   </ItemGroup>
 
 </Project>
