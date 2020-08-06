@@ -25,7 +25,7 @@ namespace CoreLMS.Tests.Services
         }
 
         [Fact]
-        public async Task ItGetsAListOfCourses()
+        public async Task GetCoursesAsync_ShouldReturnExpectedCourseList()
         {
             // given (arrange)
             List<Course> databaseCourses = new List<Course>();
@@ -46,7 +46,7 @@ namespace CoreLMS.Tests.Services
             // Otherwise we'll get a potentially "false positive" equality check since we'll just be passing around the same list by reference
             this.appDbContextMock.Setup(db =>
                 db.SelectCoursesAsync())
-                    .ReturnsAsync(new List<Course>(databaseCourses));
+                    .ReturnsAsync(new List<Course>(databaseCourses)); 
 
             // when (act)
             List<Course> actualCourses = await subject.GetCoursesAsync();
