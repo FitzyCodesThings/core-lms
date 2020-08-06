@@ -41,10 +41,12 @@ namespace CoreLMS.Tests.Services
                 Name = "Course #2"
             });
 
-            // TODO Cloning objects
+
+            // Important note: do NOT have the mock dbcontext just return databaseCourses (rather create a new List from the old list in the return)
+            // Otherwise we'll get a potentially "false positive" equality check since we'll just be passing around the same list by reference
             this.appDbContextMock.Setup(db =>
                 db.SelectCoursesAsync())
-                    .ReturnsAsync(databaseCourses.ToList());
+                    .ReturnsAsync(new List<Course>(databaseCourses));
 
             // when (act)
             List<Course> actualCourses = await subject.GetCoursesAsync();
