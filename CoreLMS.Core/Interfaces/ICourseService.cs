@@ -9,5 +9,7 @@ namespace CoreLMS.Core.Interfaces
     public interface ICourseService
     {
         Task<List<Course>> GetCoursesAsync();
+
+        Task<Course> GetCourseAsync(int id);
     }
 }
