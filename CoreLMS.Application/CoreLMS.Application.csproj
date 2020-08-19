@@ -12,4 +12,8 @@
     <ProjectReference Include="..\CoreLMS.Core\CoreLMS.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="DTOs\" />
+  </ItemGroup>
+
 </Project>

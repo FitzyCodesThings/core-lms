@@ -19,15 +19,17 @@ namespace CoreLMS.Tests.Services
     public class CourseServiceTests
     {
         private readonly Mock<IAppDbContext> appDbContextMock;
+        private readonly Mock<ILogger<CourseService>> loggerMock;
         private readonly ICourseService subject;
         private readonly Mapper mapper;
 
         public CourseServiceTests()
         {   
             this.appDbContextMock = new Mock<IAppDbContext>();
+            this.loggerMock = new Mock<ILogger<CourseService>>();
             this.mapper = new Mapper(new MapperConfiguration(cfg => cfg.CreateMap<Course, Course>()));
 
-            this.subject = new CourseService(this.appDbContextMock.Object);
+            this.subject = new CourseService(this.appDbContextMock.Object, this.loggerMock.Object);
         }
 
         [Fact]
@@ -100,6 +102,37 @@ namespace CoreLMS.Tests.Services
             // then (assert)
             await Assert.ThrowsAsync<ApplicationException>(() => subjectTask);
             appDbContextMock.Verify(db => db.SelectCourseByIdAsync(invalidId), Times.Once);
+            appDbContextMock.VerifyNoOtherCalls();
+        }
+
+        [Fact]
+        public async Task AddCourseAsync_ShouldReturnExpectedCourseWithId()
+        {
+            // given (arrange)
+            Filler<Course> courseFiller = new Filler<Course>();
+
+            courseFiller.Setup()
+                .OnProperty(p => p.Id).IgnoreIt()
+                .OnProperty(p => p.DateCreated).IgnoreIt()
+                .OnProperty(p => p.DateUpdated).IgnoreIt();
+
+            Course courseToAdd = courseFiller.Create();
+
+            Course databaseCourse = this.mapper.Map<Course>(courseToAdd);
+
+            databaseCourse.Id = 1;
+            databaseCourse.DateCreated = databaseCourse.DateUpdated = DateTime.UtcNow;
+
+            this.appDbContextMock.Setup(db =>
+                db.CreateCourseAsync(courseToAdd))
+                    .ReturnsAsync(databaseCourse);
+
+            // when (act)
+            Course actualCourse = await subject.AddCourseAsync(courseToAdd);
+
+            // then (assert)
+            actualCourse.Should().BeEquivalentTo(databaseCourse);
+            appDbContextMock.Verify(db => db.CreateCourseAsync(courseToAdd), Times.Once);
             appDbContextMock.VerifyNoOtherCalls();
         }
     }

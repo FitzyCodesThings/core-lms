@@ -7,7 +7,9 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace CoreLMS.Persistence
-{
+{    
+    // TODO Update SelectCoursesAsync to use custom predicate/where clause
+
     public partial class AppDbContext
     {
         DbSet<Course> Courses { get; set; }
@@ -21,11 +23,13 @@ namespace CoreLMS.Persistence
             return courseEntry.Entity;
         }
 
-        public async Task<Course> SelectCourseByIdAsync(int id) => 
+        public async Task<Course> SelectCourseByIdAsync(int id) =>
             await this.Courses
                 .AsNoTracking()
                 .Include(p => p.CourseLessons)
                     .ThenInclude(p => p.CourseLessonAttachments)
+                .Include(p => p.CourseLessons)
+                    .ThenInclude(p => p.Authors)                
                 .FirstOrDefaultAsync(p => p.Id == id);
 
         public async Task<List<Course>> SelectCoursesAsync()
@@ -33,6 +37,8 @@ namespace CoreLMS.Persistence
             return await this.Courses
                             .Include(p => p.CourseLessons)
                                 .ThenInclude(p => p.CourseLessonAttachments)
+                            .Include(p => p.CourseLessons)
+                                .ThenInclude(p => p.Authors)
                             .ToListAsync();
         }
 
