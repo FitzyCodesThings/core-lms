@@ -13,5 +13,9 @@ namespace CoreLMS.Core.Interfaces
         Task<Course> GetCourseAsync(int id);
 
         Task<Course> AddCourseAsync(Course course);
+
+        Task<Course> UpdateCourseAsync(Course course);
+
+        Task<Course> DeleteCourseAsync(Course course);
     }
 }

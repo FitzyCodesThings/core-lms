@@ -135,5 +135,66 @@ namespace CoreLMS.Tests.Services
             appDbContextMock.Verify(db => db.CreateCourseAsync(courseToAdd), Times.Once);
             appDbContextMock.VerifyNoOtherCalls();
         }
+
+        // TODO Decide validation / implement invalid object test case
+
+        [Fact]
+        public async Task UpdateCourseAsync_ShouldReturnExpectedCourse()
+        {
+            // given (arrange)
+            Filler<Course> courseFiller = new Filler<Course>();
+
+            Course courseToUpdate = courseFiller.Create();
+
+            Course databaseCourse = this.mapper.Map<Course>(courseToUpdate);
+
+            DateTime updateTime = DateTime.UtcNow;
+
+            databaseCourse.DateUpdated = updateTime;
+
+            this.appDbContextMock.Setup(db =>
+                db.UpdateCourseAsync(courseToUpdate))
+                    .ReturnsAsync(databaseCourse);
+
+            // when (act)
+            Course actualCourse = await subject.UpdateCourseAsync(courseToUpdate);
+
+            // then (assert)
+            actualCourse.Should().BeEquivalentTo(databaseCourse);
+            Assert.Equal(actualCourse.DateUpdated, updateTime);
+            appDbContextMock.Verify(db => db.UpdateCourseAsync(courseToUpdate), Times.Once);
+            appDbContextMock.VerifyNoOtherCalls();
+        }
+
+        [Fact]
+        public async Task DeleteCourseAsync_ShouldReturnExpectedCourse()
+        {
+            // given (arrange)
+            Filler<Course> courseFiller = new Filler<Course>();
+
+            Course courseToDelete = courseFiller.Create();
+
+            Course databaseCourse = this.mapper.Map<Course>(courseToDelete);
+
+            DateTime updateTime = DateTime.UtcNow;
+
+            databaseCourse.DateUpdated = updateTime;
+
+            databaseCourse.DateDeleted = updateTime;
+
+            this.appDbContextMock.Setup(db =>
+                db.DeleteCourseAsync(courseToDelete))
+                    .ReturnsAsync(databaseCourse);
+
+            // when (act)
+            Course actualCourse = await subject.DeleteCourseAsync(courseToDelete);
+
+            // then (assert)
+            actualCourse.Should().BeEquivalentTo(databaseCourse);
+            Assert.Equal(actualCourse.DateUpdated, updateTime);
+            Assert.Equal(actualCourse.DateDeleted.GetValueOrDefault(), updateTime);
+            appDbContextMock.Verify(db => db.DeleteCourseAsync(courseToDelete), Times.Once);
+            appDbContextMock.VerifyNoOtherCalls();
+        }
     }
 }

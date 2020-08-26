@@ -25,6 +25,11 @@ namespace CoreLMS.Application.Services
             return await this.db.CreateCourseAsync(course);
         }
 
+        public async Task<Course> DeleteCourseAsync(Course course)
+        {
+            return await this.db.DeleteCourseAsync(course);
+        }
+
         public async Task<Course> GetCourseAsync(int id)
         {
             var course = await this.db.SelectCourseByIdAsync(id);
@@ -39,5 +44,10 @@ namespace CoreLMS.Application.Services
         }
 
         public async Task<List<Course>> GetCoursesAsync() => await db.SelectCoursesAsync();
+
+        public async Task<Course> UpdateCourseAsync(Course course)
+        {
+            return await db.UpdateCourseAsync(course);
+        }
     }
 }
