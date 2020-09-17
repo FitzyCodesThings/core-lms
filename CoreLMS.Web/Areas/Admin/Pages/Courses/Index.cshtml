@@ -1,0 +1,68 @@
+﻿@page
+@model CoreLMS.Web.Areas.Admin.Pages.Courses.IndexModel
+
+@{
+    ViewData["Title"] = "All Courses";
+}
+
+<h1>Courses</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Courses[0].Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Courses[0].Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Courses[0].CourseType)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Courses[0].CourseImageURL)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Courses[0].DateCreated)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Courses[0].DateUpdated)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.Courses) {
+        <tr>
+            
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CourseType)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CourseImageURL)
+            <td>
+                @Html.DisplayFor(modelItem => item.DateCreated)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateUpdated)
+            </td>
+            </td>
+            <td>
+                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+<p>
+    <a class="btn btn-success" asp-page="Create">Create New Course</a>
+</p>

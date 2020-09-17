@@ -10,7 +10,7 @@ namespace CoreLMS.Persistence
 {
     public partial class AppDbContext
     {
-        DbSet<Author> Authors { get; set; }
+        public DbSet<Author> Authors { get; set; }
 
         public async Task<Author> CreateAuthorAsync(Author author)
         {

@@ -3,17 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30225.117
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreLMS.Web.MVC", "CoreLMS.Web.MVC\CoreLMS.Web.MVC.csproj", "{3E0DFFB6-9BB8-43BC-84D3-BEF86237006E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoreLMS.Web.MVC", "CoreLMS.Web.MVC\CoreLMS.Web.MVC.csproj", "{3E0DFFB6-9BB8-43BC-84D3-BEF86237006E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreLMS.Core", "CoreLMS.Core\CoreLMS.Core.csproj", "{7C1CC6D3-C856-4B51-9686-0D3E242D4946}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoreLMS.Core", "CoreLMS.Core\CoreLMS.Core.csproj", "{7C1CC6D3-C856-4B51-9686-0D3E242D4946}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreLMS.Infrastructure", "CoreLMS.Infrastructure\CoreLMS.Infrastructure.csproj", "{A3B6CC5C-FA65-40B2-983D-3D9DB5978DB4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoreLMS.Infrastructure", "CoreLMS.Infrastructure\CoreLMS.Infrastructure.csproj", "{A3B6CC5C-FA65-40B2-983D-3D9DB5978DB4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreLMS.Persistence", "CoreLMS.Persistence\CoreLMS.Persistence.csproj", "{2B5FE5DF-F1D8-485C-A97C-96A500A8C1C3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoreLMS.Persistence", "CoreLMS.Persistence\CoreLMS.Persistence.csproj", "{2B5FE5DF-F1D8-485C-A97C-96A500A8C1C3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreLMS.Tests", "CoreLMS.Tests\CoreLMS.Tests.csproj", "{7A7F6AE3-A805-4DD7-93DC-691AF345B88E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoreLMS.Tests", "CoreLMS.Tests\CoreLMS.Tests.csproj", "{7A7F6AE3-A805-4DD7-93DC-691AF345B88E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoreLMS.Application", "CoreLMS.Application\CoreLMS.Application.csproj", "{1A4C0230-3A9F-4CCE-BD2C-7E75CF6770DF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreLMS.Web", "CoreLMS.Web\CoreLMS.Web.csproj", "{C80DA6B8-3825-45FE-B4D7-874531B4B26D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{1A4C0230-3A9F-4CCE-BD2C-7E75CF6770DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1A4C0230-3A9F-4CCE-BD2C-7E75CF6770DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1A4C0230-3A9F-4CCE-BD2C-7E75CF6770DF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C80DA6B8-3825-45FE-B4D7-874531B4B26D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C80DA6B8-3825-45FE-B4D7-874531B4B26D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C80DA6B8-3825-45FE-B4D7-874531B4B26D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C80DA6B8-3825-45FE-B4D7-874531B4B26D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,4 +1,5 @@
-﻿using CoreLMS.Core.Entities;
+﻿using CoreLMS.Core.DataTransferObjects.Courses;
+using CoreLMS.Core.Entities;
 using CoreLMS.Core.Interfaces;
 using Microsoft.Extensions.Logging;
 using System;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace CoreLMS.Application.Services
 {
-    public class CourseService : ICourseService
+    public partial class CourseService : ICourseService
     {   
         private readonly IAppDbContext db;
         private readonly ILogger<CourseService> logger;
@@ -20,13 +21,61 @@ namespace CoreLMS.Application.Services
             this.logger = logger;
         }
 
-        public async Task<Course> AddCourseAsync(Course course)
+        public async Task<Course> AddCourseAsync(CreateCourseDto courseDto)
         {
+            var course = new Course
+            {
+                Name = courseDto.Name,
+                Description = courseDto.Description,
+                CourseType = courseDto.CourseType,
+                CourseImageURL = courseDto.CourseImageURL
+            };
+
+            try
+            {
+                this.ValidateCourseOnCreate(course);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Attempted to add invalid course.");
+                throw;
+            }
+
             return await this.db.CreateCourseAsync(course);
         }
 
-        public async Task<Course> DeleteCourseAsync(Course course)
+        public async Task<Course> UpdateCourseAsync(UpdateCourseDto courseDto)
         {
+            var course = await db.SelectCourseByIdAsync(courseDto.Id);
+
+            course.Name = courseDto.Name;
+            course.Description = courseDto.Description;
+            course.CourseType = courseDto.CourseType;
+            course.CourseImageURL = courseDto.CourseImageURL;            
+
+            try
+            {
+                this.ValidateCourseOnUpdate(course);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Attempted to update invalid course.");
+                throw;
+            }
+
+            return await db.UpdateCourseAsync(course);
+        }
+
+        public async Task<Course> DeleteCourseAsync(int id)
+        {
+            var course = await db.SelectCourseByIdAsync(id);
+
+            if (course == null)
+            {
+                logger.LogWarning($"Course {id} not found for deletion.");
+                throw new ApplicationException($"Course {id} not found for deletion.");
+            }
+
             return await this.db.DeleteCourseAsync(course);
         }
 
@@ -44,10 +93,5 @@ namespace CoreLMS.Application.Services
         }
 
         public async Task<List<Course>> GetCoursesAsync() => await db.SelectCoursesAsync();
-
-        public async Task<Course> UpdateCourseAsync(Course course)
-        {
-            return await db.UpdateCourseAsync(course);
-        }
     }
 }

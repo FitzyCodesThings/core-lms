@@ -15,8 +15,8 @@ namespace CoreLMS.Persistence
     {
         private readonly IConfiguration configuration;
 
-        DbSet<Person> People { get; set; }
-        DbSet<AuthorCourseLesson> AuthorCourseLessons { get; set; }
+        public DbSet<Person> People { get; set; }
+        public DbSet<AuthorCourseLesson> AuthorCourseLessons { get; set; }
 
         public AppDbContext(IConfiguration configuration)
         {
@@ -26,7 +26,7 @@ namespace CoreLMS.Persistence
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(this.configuration.GetConnectionString("DefaultConnection"));
+            optionsBuilder.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

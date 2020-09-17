@@ -12,7 +12,7 @@ namespace CoreLMS.Persistence
         public AppDbContext CreateDbContext(string[] args)
         {
 
-            var basePath = Directory.GetCurrentDirectory() + string.Format("{0}..{0}CoreLMS.Web.MVC", Path.DirectorySeparatorChar);
+            var basePath = Directory.GetCurrentDirectory() + string.Format("{0}..{0}CoreLMS.Web", Path.DirectorySeparatorChar);
 
             var configuration = new ConfigurationBuilder()
                 .SetBasePath(basePath)

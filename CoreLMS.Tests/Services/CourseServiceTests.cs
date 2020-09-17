@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using CoreLMS.Application.Services;
+using CoreLMS.Core.DataTransferObjects.Courses;
 using CoreLMS.Core.Entities;
 using CoreLMS.Core.Interfaces;
 using FluentAssertions;
+using FluentAssertions.Common;
 using Microsoft.Extensions.Logging;
 using Moq;
 using System;
@@ -16,7 +18,7 @@ using Xunit;
 
 namespace CoreLMS.Tests.Services
 {
-    public class CourseServiceTests
+    public partial class CourseServiceTests
     {
         private readonly Mock<IAppDbContext> appDbContextMock;
         private readonly Mock<ILogger<CourseService>> loggerMock;
@@ -26,8 +28,16 @@ namespace CoreLMS.Tests.Services
         public CourseServiceTests()
         {   
             this.appDbContextMock = new Mock<IAppDbContext>();
+            
             this.loggerMock = new Mock<ILogger<CourseService>>();
-            this.mapper = new Mapper(new MapperConfiguration(cfg => cfg.CreateMap<Course, Course>()));
+
+            this.mapper = new Mapper(new MapperConfiguration(cfg => {
+                cfg.CreateMap<Course, CreateCourseDto>();
+                cfg.CreateMap<CreateCourseDto, Course>();
+                cfg.CreateMap<Course, UpdateCourseDto>();
+                cfg.CreateMap<UpdateCourseDto, Course>();
+                cfg.CreateMap<Course, Course>();
+            }));
 
             this.subject = new CourseService(this.appDbContextMock.Object, this.loggerMock.Object);
         }
@@ -86,83 +96,70 @@ namespace CoreLMS.Tests.Services
 
 
         [Fact]
-        public async Task GetCourseAsync_ShouldThrowApplicationExceptionWhenIdIsInvalid()
-        {
-            // given (arrange)
-            int invalidId = 100;
-            Course invalidCourse = null;
-
-            this.appDbContextMock.Setup(db =>
-                db.SelectCourseByIdAsync(invalidId))
-                    .ReturnsAsync(invalidCourse);
-
-            // when (act)
-            var subjectTask = subject.GetCourseAsync(invalidId);
-
-            // then (assert)
-            await Assert.ThrowsAsync<ApplicationException>(() => subjectTask);
-            appDbContextMock.Verify(db => db.SelectCourseByIdAsync(invalidId), Times.Once);
-            appDbContextMock.VerifyNoOtherCalls();
-        }
-
-        [Fact]
         public async Task AddCourseAsync_ShouldReturnExpectedCourseWithId()
         {
             // given (arrange)
-            Filler<Course> courseFiller = new Filler<Course>();
+            Filler<CreateCourseDto> courseFiller = new Filler<CreateCourseDto>();
 
-            courseFiller.Setup()
-                .OnProperty(p => p.Id).IgnoreIt()
-                .OnProperty(p => p.DateCreated).IgnoreIt()
-                .OnProperty(p => p.DateUpdated).IgnoreIt();
+            CreateCourseDto courseDtoToAdd = courseFiller.Create();
 
-            Course courseToAdd = courseFiller.Create();
+            Course courseToAdd = this.mapper.Map<Course>(courseDtoToAdd);
 
             Course databaseCourse = this.mapper.Map<Course>(courseToAdd);
 
             databaseCourse.Id = 1;
             databaseCourse.DateCreated = databaseCourse.DateUpdated = DateTime.UtcNow;
 
-            this.appDbContextMock.Setup(db =>
-                db.CreateCourseAsync(courseToAdd))
+            this.appDbContextMock
+                .Setup(db => db.CreateCourseAsync(It.IsAny<Course>()))
                     .ReturnsAsync(databaseCourse);
 
             // when (act)
-            Course actualCourse = await subject.AddCourseAsync(courseToAdd);
+            var actualCourse = await subject.AddCourseAsync(courseDtoToAdd);
 
             // then (assert)
             actualCourse.Should().BeEquivalentTo(databaseCourse);
-            appDbContextMock.Verify(db => db.CreateCourseAsync(courseToAdd), Times.Once);
+            appDbContextMock.Verify(db => db.CreateCourseAsync(It.IsAny<Course>()), Times.Once);
             appDbContextMock.VerifyNoOtherCalls();
         }
-
-        // TODO Decide validation / implement invalid object test case
 
         [Fact]
         public async Task UpdateCourseAsync_ShouldReturnExpectedCourse()
         {
             // given (arrange)
-            Filler<Course> courseFiller = new Filler<Course>();
+            DateTime updateTime = DateTime.UtcNow;
+            DateTime createTime = updateTime.AddDays(-5);
 
-            Course courseToUpdate = courseFiller.Create();
+            Filler<UpdateCourseDto> courseFiller = new Filler<UpdateCourseDto>();
+
+            UpdateCourseDto courseToUpdateDto = courseFiller.Create();
+
+            courseToUpdateDto.Id = 1;
+
+            Course courseToUpdate = this.mapper.Map<Course>(courseToUpdateDto);
+
+            courseToUpdate.DateCreated = courseToUpdate.DateUpdated = createTime;
 
             Course databaseCourse = this.mapper.Map<Course>(courseToUpdate);
-
-            DateTime updateTime = DateTime.UtcNow;
 
             databaseCourse.DateUpdated = updateTime;
 
             this.appDbContextMock.Setup(db =>
-                db.UpdateCourseAsync(courseToUpdate))
+                db.SelectCourseByIdAsync(courseToUpdateDto.Id))
+                    .ReturnsAsync(courseToUpdate);
+
+            this.appDbContextMock.Setup(db =>
+                db.UpdateCourseAsync(It.IsAny<Course>()))
                     .ReturnsAsync(databaseCourse);
 
             // when (act)
-            Course actualCourse = await subject.UpdateCourseAsync(courseToUpdate);
+            Course actualCourse = await subject.UpdateCourseAsync(courseToUpdateDto);
 
             // then (assert)
             actualCourse.Should().BeEquivalentTo(databaseCourse);
             Assert.Equal(actualCourse.DateUpdated, updateTime);
-            appDbContextMock.Verify(db => db.UpdateCourseAsync(courseToUpdate), Times.Once);
+            appDbContextMock.Verify(db => db.SelectCourseByIdAsync(actualCourse.Id), Times.Once);
+            appDbContextMock.Verify(db => db.UpdateCourseAsync(It.IsAny<Course>()), Times.Once);
             appDbContextMock.VerifyNoOtherCalls();
         }
 
@@ -183,16 +180,21 @@ namespace CoreLMS.Tests.Services
             databaseCourse.DateDeleted = updateTime;
 
             this.appDbContextMock.Setup(db =>
+                db.SelectCourseByIdAsync(courseToDelete.Id))
+                    .ReturnsAsync(courseToDelete);
+
+            this.appDbContextMock.Setup(db =>
                 db.DeleteCourseAsync(courseToDelete))
                     .ReturnsAsync(databaseCourse);
 
             // when (act)
-            Course actualCourse = await subject.DeleteCourseAsync(courseToDelete);
+            Course actualCourse = await subject.DeleteCourseAsync(courseToDelete.Id);
 
             // then (assert)
             actualCourse.Should().BeEquivalentTo(databaseCourse);
             Assert.Equal(actualCourse.DateUpdated, updateTime);
             Assert.Equal(actualCourse.DateDeleted.GetValueOrDefault(), updateTime);
+            appDbContextMock.Verify(db => db.SelectCourseByIdAsync(actualCourse.Id), Times.Once);
             appDbContextMock.Verify(db => db.DeleteCourseAsync(courseToDelete), Times.Once);
             appDbContextMock.VerifyNoOtherCalls();
         }

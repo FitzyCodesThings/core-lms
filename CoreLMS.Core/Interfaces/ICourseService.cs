@@ -1,4 +1,5 @@
-﻿using CoreLMS.Core.Entities;
+﻿using CoreLMS.Core.DataTransferObjects.Courses;
+using CoreLMS.Core.Entities;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -12,10 +13,10 @@ namespace CoreLMS.Core.Interfaces
 
         Task<Course> GetCourseAsync(int id);
 
-        Task<Course> AddCourseAsync(Course course);
+        Task<Course> AddCourseAsync(CreateCourseDto course);
 
-        Task<Course> UpdateCourseAsync(Course course);
+        Task<Course> UpdateCourseAsync(UpdateCourseDto course);
 
-        Task<Course> DeleteCourseAsync(Course course);
+        Task<Course> DeleteCourseAsync(int id);
     }
 }
