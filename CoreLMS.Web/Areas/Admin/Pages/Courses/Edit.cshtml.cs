@@ -8,20 +8,23 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using CoreLMS.Core.Entities;
 using CoreLMS.Persistence;
+using CoreLMS.Core.DataTransferObjects;
+using CoreLMS.Core.Interfaces;
+using System.ComponentModel.DataAnnotations;
 
 namespace CoreLMS.Web.Areas.Admin.Pages.Courses
 {
     public class EditModel : PageModel
     {
-        private readonly CoreLMS.Persistence.AppDbContext _context;
+        private readonly ICourseService courseService;
 
-        public EditModel(CoreLMS.Persistence.AppDbContext context)
+        public EditModel(ICourseService courseService)
         {
-            _context = context;
+            this.courseService = courseService;
         }
 
         [BindProperty]
-        public Course Course { get; set; }
+        public UpdateCourseDto CourseDto { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -30,17 +33,30 @@ namespace CoreLMS.Web.Areas.Admin.Pages.Courses
                 return NotFound();
             }
 
-            Course = await _context.Courses.FirstOrDefaultAsync(m => m.Id == id);
+            Course course;
 
-            if (Course == null)
+            try
             {
+                 course = await courseService.GetCourseAsync(id.Value);
+            }
+            catch (ApplicationException)
+            {
+
                 return NotFound();
             }
+
+            CourseDto = new UpdateCourseDto
+            {
+                Id = course.Id,
+                Name = course.Name,
+                Description = course.Description,
+                CourseType = course.CourseType,
+                CourseImageURL = course.CourseImageURL
+            };
+
             return Page();
         }
 
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
@@ -48,30 +64,21 @@ namespace CoreLMS.Web.Areas.Admin.Pages.Courses
                 return Page();
             }
 
-            _context.Attach(Course).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
+                await courseService.UpdateCourseAsync(CourseDto);
             }
-            catch (DbUpdateConcurrencyException)
+            catch (ValidationException ex)
             {
-                if (!CourseExists(Course.Id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                ModelState.AddModelError("", ex.Message);               
+                return Page();
+            }
+            catch (Exception)
+            {
+                return Page();
             }
 
             return RedirectToPage("./Index");
-        }
-
-        private bool CourseExists(int id)
-        {
-            return _context.Courses.Any(e => e.Id == id);
         }
     }
 }

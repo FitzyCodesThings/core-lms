@@ -15,7 +15,6 @@ namespace CoreLMS.Persistence
     {
         private readonly IConfiguration configuration;
 
-        public DbSet<Person> People { get; set; }
         public DbSet<AuthorCourseLesson> AuthorCourseLessons { get; set; }
 
         public AppDbContext(IConfiguration configuration)
@@ -53,8 +52,7 @@ namespace CoreLMS.Persistence
             modelBuilder.Entity<Course>().HasQueryFilter(e => e.DateDeleted == null);
             modelBuilder.Entity<CourseLesson>().HasQueryFilter(e => e.DateDeleted == null);
             modelBuilder.Entity<CourseLessonAttachment>().HasQueryFilter(e => e.DateDeleted == null);
-            modelBuilder.Entity<Author>().HasQueryFilter(e => e.DateDeleted == null);
-            modelBuilder.Entity<Person>().HasQueryFilter(e => e.DateDeleted == null);
+            modelBuilder.Entity<Author>().HasQueryFilter(e => e.DateDeleted == null);            
             #endregion
         }
 

@@ -13,19 +13,19 @@ namespace CoreLMS.Application.Services
         private void ValidateCourseOnCreate(Course course)
         {
             ModelValidator.ValidateModel(course);
-            //ValidateCourseHasAtLeastOneLesson(course);
         }
 
         private void ValidateCourseOnUpdate(Course course)
         {
+            // TODO Turn "minimum course count" back on 
             ModelValidator.ValidateModel(course);
             //ValidateCourseHasAtLeastOneLesson(course);
         }
 
-        //private void ValidateCourseHasAtLeastOneLesson(Course course)
-        //{
-        //    if (course.CourseLessons == null || course.CourseLessons.Count() == 0)
-        //        throw new ValidationException("Courses must contain at least one lesson.");
-        //}
+        private void ValidateCourseHasAtLeastOneLesson(Course course)
+        {
+            if (course.CourseLessons == null || course.CourseLessons.Count() == 0)
+                throw new ValidationException("Courses must contain at least one lesson.");
+        }
     }
 }

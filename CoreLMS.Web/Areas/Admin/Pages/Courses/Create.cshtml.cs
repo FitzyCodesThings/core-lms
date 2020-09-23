@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using CoreLMS.Core.Entities;
 using CoreLMS.Core.Interfaces;
-using CoreLMS.Core.DataTransferObjects.Courses;
+using CoreLMS.Core.DataTransferObjects;
 
 namespace CoreLMS.Web.Areas.Admin.Pages.Courses
 {

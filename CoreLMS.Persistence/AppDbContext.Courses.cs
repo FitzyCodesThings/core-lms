@@ -43,8 +43,7 @@ namespace CoreLMS.Persistence
                     .ThenInclude(p => p.CourseLessonAttachments)
                 .Include(p => p.CourseLessons)
                     .ThenInclude(p => p.Authors)
-                        .ThenInclude(p => p.Author)
-                            .ThenInclude(p => p.Person)
+                        .ThenInclude(p => p.Author)                            
                 .FirstOrDefaultAsync(p => p.Id == id);
 
         public async Task<List<Course>> SelectCoursesAsync()
@@ -55,7 +54,6 @@ namespace CoreLMS.Persistence
                             .Include(p => p.CourseLessons)
                                 .ThenInclude(p => p.Authors)
                                     .ThenInclude(p => p.Author)
-                                        .ThenInclude(p => p.Person)
                             .ToListAsync();
         }
     }

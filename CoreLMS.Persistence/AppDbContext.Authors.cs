@@ -21,14 +21,12 @@ namespace CoreLMS.Persistence
 
         public async Task<Author> SelectAuthorByIdAsync(int id) =>
             await this.Authors
-                .AsNoTracking()
-                .Include(p => p.Person)
+                .AsNoTracking()                
                 .FirstOrDefaultAsync(p => p.Id == id);
 
         public async Task<List<Author>> SelectAuthorsAsync()
         {
-            return await this.Authors
-                            .Include(p => p.Person)
+            return await this.Authors                            
                             .ToListAsync();
         }
 

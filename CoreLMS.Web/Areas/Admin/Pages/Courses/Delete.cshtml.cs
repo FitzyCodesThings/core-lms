@@ -7,20 +7,22 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using CoreLMS.Core.Entities;
 using CoreLMS.Persistence;
+using CoreLMS.Core.Interfaces;
+using CoreLMS.Core.DataTransferObjects;
 
 namespace CoreLMS.Web.Areas.Admin.Pages.Courses
 {
     public class DeleteModel : PageModel
     {
-        private readonly CoreLMS.Persistence.AppDbContext _context;
+        private readonly ICourseService courseService;
 
-        public DeleteModel(CoreLMS.Persistence.AppDbContext context)
-        {
-            _context = context;
+        public DeleteModel(ICourseService courseService)
+        {            
+            this.courseService = courseService;
         }
 
         [BindProperty]
-        public Course Course { get; set; }
+        public UpdateCourseDto CourseDto { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -29,29 +31,33 @@ namespace CoreLMS.Web.Areas.Admin.Pages.Courses
                 return NotFound();
             }
 
-            Course = await _context.Courses.FirstOrDefaultAsync(m => m.Id == id);
+            Course course = await courseService.GetCourseAsync(id.Value);
 
-            if (Course == null)
+            if (course == null)
             {
                 return NotFound();
             }
+
+            CourseDto = new UpdateCourseDto
+            {
+                Id = course.Id,
+                Name = course.Name,
+                Description = course.Description,
+                CourseType = course.CourseType,
+                CourseImageURL = course.CourseImageURL
+            };
+
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync(int? id)
+        public async Task<IActionResult> OnPostAsync()
         {
-            if (id == null)
+            if (CourseDto == null)
             {
                 return NotFound();
             }
 
-            Course = await _context.Courses.FindAsync(id);
-
-            if (Course != null)
-            {
-                _context.Courses.Remove(Course);
-                await _context.SaveChangesAsync();
-            }
+            await courseService.DeleteCourseAsync(CourseDto.Id);
 
             return RedirectToPage("./Index");
         }

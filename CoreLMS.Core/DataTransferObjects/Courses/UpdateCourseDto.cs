@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 
-namespace CoreLMS.Core.DataTransferObjects.Courses
+namespace CoreLMS.Core.DataTransferObjects
 {
     public class UpdateCourseDto
     {

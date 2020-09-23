@@ -1,4 +1,4 @@
-﻿using CoreLMS.Core.DataTransferObjects.Courses;
+﻿using CoreLMS.Core.DataTransferObjects;
 using CoreLMS.Core.Entities;
 using Moq;
 using System;
@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using Tynamix.ObjectFiller;
 using Xunit;
 
-namespace CoreLMS.Tests.Services
+namespace CoreLMS.Tests.Services.Courses
 {
     public partial class CourseServiceTests
     {

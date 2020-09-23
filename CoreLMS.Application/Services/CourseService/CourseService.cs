@@ -1,4 +1,4 @@
-﻿using CoreLMS.Core.DataTransferObjects.Courses;
+﻿using CoreLMS.Core.DataTransferObjects;
 using CoreLMS.Core.Entities;
 using CoreLMS.Core.Interfaces;
 using Microsoft.Extensions.Logging;

@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using CoreLMS.Application.Services;
-using CoreLMS.Core.DataTransferObjects.Courses;
+using CoreLMS.Core.DataTransferObjects;
 using CoreLMS.Core.Entities;
 using CoreLMS.Core.Interfaces;
 using FluentAssertions;
@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 using Tynamix.ObjectFiller;
 using Xunit;
 
-namespace CoreLMS.Tests.Services
+namespace CoreLMS.Tests.Services.Courses
 {
     public partial class CourseServiceTests
     {
