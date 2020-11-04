@@ -98,6 +98,12 @@ namespace CoreLMS.Tests.Services
             // given (arrange)
             Filler<CreateAuthorDto> authorFiller = new Filler<CreateAuthorDto>();
 
+            authorFiller.Setup()
+                .OnProperty(x => x.ContactEmail)
+                    .Use(new EmailAddresses(".com"))
+                .OnProperty(x => x.ContactPhoneNumber)
+                    .Use("555-555-5555");
+
             CreateAuthorDto authorDtoToAdd = authorFiller.Create();
 
             Author authorToAdd = this.mapper.Map<Author>(authorDtoToAdd);
@@ -120,5 +126,87 @@ namespace CoreLMS.Tests.Services
             appDbContextMock.VerifyNoOtherCalls();
         }
 
+        [Fact]
+        public async Task UpdateAuthorAsync_ShouldReturnExpectedAuthor()
+        {
+            // given (arrange)
+            DateTime updateTime = DateTime.UtcNow;
+            DateTime createTime = updateTime.AddDays(-5);
+
+            Filler<UpdateAuthorDto> authorFiller = new Filler<UpdateAuthorDto>();
+
+            authorFiller.Setup()
+                .OnProperty(x => x.ContactEmail)
+                    .Use(new EmailAddresses(".com"))
+                .OnProperty(x => x.ContactPhoneNumber)
+                    .Use("555-555-5555");
+
+            UpdateAuthorDto authorToUpdateDto = authorFiller.Create();
+
+            authorToUpdateDto.Id = 1;            
+
+            Author authorToUpdate = this.mapper.Map<Author>(authorToUpdateDto);
+
+            authorToUpdate.DateCreated = createTime;
+            authorToUpdate.DateUpdated = updateTime;
+
+            Author databaseAuthor = this.mapper.Map<Author>(authorToUpdate);
+
+            databaseAuthor.DateUpdated = updateTime;
+
+            this.appDbContextMock.Setup(db =>
+                db.SelectAuthorByIdAsync(authorToUpdateDto.Id))
+                    .ReturnsAsync(authorToUpdate);
+
+            this.appDbContextMock.Setup(db =>
+                db.UpdateAuthorAsync(It.IsAny<Author>()))
+                    .ReturnsAsync(databaseAuthor);
+
+            // when (act)
+            Author actualAuthor = await subject.UpdateAuthorAsync(authorToUpdateDto);
+
+            // then (assert)
+            actualAuthor.Should().BeEquivalentTo(databaseAuthor);
+            Assert.Equal(actualAuthor.DateUpdated, updateTime);
+            appDbContextMock.Verify(db => db.SelectAuthorByIdAsync(actualAuthor.Id), Times.Once);
+            appDbContextMock.Verify(db => db.UpdateAuthorAsync(It.IsAny<Author>()), Times.Once);
+            appDbContextMock.VerifyNoOtherCalls();
+        }
+
+        [Fact]
+        public async Task DeleteAuthorAsync_ShouldReturnExpectedAuthor()
+        {
+            // given (arrange)
+            Filler<Author> authorFiller = new Filler<Author>();
+
+            Author authorToDelete = authorFiller.Create();
+
+            Author databaseAuthor = this.mapper.Map<Author>(authorToDelete);
+
+            DateTime updateTime = DateTime.UtcNow;
+
+            databaseAuthor.DateUpdated = updateTime;
+
+            databaseAuthor.DateDeleted = updateTime;
+
+            this.appDbContextMock.Setup(db =>
+                db.SelectAuthorByIdAsync(authorToDelete.Id))
+                    .ReturnsAsync(authorToDelete);
+
+            this.appDbContextMock.Setup(db =>
+                db.DeleteAuthorAsync(authorToDelete))
+                    .ReturnsAsync(databaseAuthor);
+
+            // when (act)
+            Author actualAuthor = await subject.DeleteAuthorAsync(authorToDelete.Id);
+
+            // then (assert)
+            actualAuthor.Should().BeEquivalentTo(databaseAuthor);
+            Assert.Equal(actualAuthor.DateUpdated, updateTime);
+            Assert.Equal(actualAuthor.DateDeleted.GetValueOrDefault(), updateTime);
+            appDbContextMock.Verify(db => db.SelectAuthorByIdAsync(actualAuthor.Id), Times.Once);
+            appDbContextMock.Verify(db => db.DeleteAuthorAsync(authorToDelete), Times.Once);
+            appDbContextMock.VerifyNoOtherCalls();
+        }
     }
 }

@@ -50,5 +50,30 @@ namespace CoreLMS.Tests.Services
             await Assert.ThrowsAsync<ValidationException>(() => actualAuthorTask);
             appDbContextMock.VerifyNoOtherCalls();
         }
+
+        [Fact]
+        public async Task UpdateAuthorAsync_ShouldThrowExceptionForInvalidDataAnnotationRequirement()
+        {
+            // given (arrange)
+            Filler<UpdateAuthorDto> authorFiller = new Filler<UpdateAuthorDto>();
+
+            UpdateAuthorDto invalidAuthorToUpdateDto = authorFiller.Create();
+
+            Author invalidAuthorToUpdate = this.mapper.Map<Author>(invalidAuthorToUpdateDto);
+
+            // Object filler will create an invalid email address by default, so we'll use that //
+
+            this.appDbContextMock.Setup(db =>
+                db.SelectAuthorByIdAsync(invalidAuthorToUpdateDto.Id))
+                    .ReturnsAsync(invalidAuthorToUpdate);
+
+            // when (act)
+            var actualAuthorTask = subject.UpdateAuthorAsync(invalidAuthorToUpdateDto);
+
+            // then (assert)
+            await Assert.ThrowsAsync<ValidationException>(() => actualAuthorTask);
+            appDbContextMock.Verify(db => db.SelectAuthorByIdAsync(invalidAuthorToUpdateDto.Id), Times.Once);
+            appDbContextMock.VerifyNoOtherCalls();
+        }
     }
 }

@@ -49,9 +49,18 @@ namespace CoreLMS.Application.Services
             return await this.db.CreateAuthorAsync(author);
         }
 
-        public Task<Author> DeleteAuthorAsync(int id)
+        public async Task<Author> DeleteAuthorAsync(int id)
         {
-            throw new NotImplementedException();
+            var author = await db.SelectAuthorByIdAsync(id);
+
+            // TODO Add test case for invalid course/author/etc. on deletion attempt //
+            if (author == null)
+            {
+                logger.LogWarning($"Author {id} not found for deletion.");
+                throw new ApplicationException($"Author {id} not found for deletion.");
+            }
+
+            return await this.db.DeleteAuthorAsync(author);
         }
 
         public async Task<Author> GetAuthorAsync(int id)
@@ -70,9 +79,31 @@ namespace CoreLMS.Application.Services
 
         public async Task<List<Author>> GetAuthorsAsync() => await this.db.SelectAuthorsAsync();
 
-        public Task<Author> UpdateAuthorAsync(UpdateAuthorDto author)
+        public async Task<Author> UpdateAuthorAsync(UpdateAuthorDto authorDto)
         {
-            throw new NotImplementedException();
+            var author = await this.db.SelectAuthorByIdAsync(authorDto.Id);
+
+            author.FirstName = authorDto.FirstName;
+            author.MiddleName = authorDto.MiddleName;
+            author.LastName = authorDto.LastName;
+            author.Suffix = authorDto.Suffix;
+            author.ContactEmail = authorDto.ContactEmail;
+            author.ContactPhoneNumber = authorDto.ContactPhoneNumber;
+            author.Description = authorDto.Description;
+            author.WebsiteURL = authorDto.WebsiteURL;
+
+            try
+            {
+                this.ValidateAuthorOnUpdate(author);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Attempted to add invalid author.");
+                throw;
+            }
+
+            return await db.UpdateAuthorAsync(author);
         }
+
     }
 }
