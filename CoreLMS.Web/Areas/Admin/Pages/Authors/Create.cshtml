@@ -1,0 +1,68 @@
+﻿@page
+@model CoreLMS.Web.Areas.Admin.Pages.Authors.CreateModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Add an Author</h1>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            
+            <div class="form-group">
+                <label asp-for="AuthorDto.FirstName" class="control-label"></label>
+                <input asp-for="AuthorDto.FirstName" class="form-control" />
+                <span asp-validation-for="AuthorDto.FirstName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AuthorDto.MiddleName" class="control-label"></label>
+                <input asp-for="AuthorDto.MiddleName" class="form-control" />
+                <span asp-validation-for="AuthorDto.MiddleName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AuthorDto.LastName" class="control-label"></label>
+                <input asp-for="AuthorDto.LastName" class="form-control" />
+                <span asp-validation-for="AuthorDto.LastName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AuthorDto.Suffix" class="control-label"></label>
+                <input asp-for="AuthorDto.Suffix" class="form-control" />
+                <span asp-validation-for="AuthorDto.Suffix" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AuthorDto.ContactEmail" class="control-label"></label>
+                <input asp-for="AuthorDto.ContactEmail" class="form-control" />
+                <span asp-validation-for="AuthorDto.ContactEmail" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AuthorDto.ContactPhoneNumber" class="control-label"></label>
+                <input asp-for="AuthorDto.ContactPhoneNumber" class="form-control" />
+                <span asp-validation-for="AuthorDto.ContactPhoneNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AuthorDto.Description" class="control-label"></label>
+                <input asp-for="AuthorDto.Description" class="form-control" />
+                <span asp-validation-for="AuthorDto.Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AuthorDto.WebsiteURL" class="control-label"></label>
+                <input asp-for="AuthorDto.WebsiteURL" class="form-control" />
+                <span asp-validation-for="AuthorDto.WebsiteURL" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

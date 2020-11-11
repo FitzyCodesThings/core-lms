@@ -1,0 +1,91 @@
+﻿@page
+@model CoreLMS.Web.Areas.Admin.Pages.Authors.IndexModel
+
+@{
+    ViewData["Title"] = "All Authors";
+}
+
+<h1>Authors</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Authors[0].FirstName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Authors[0].MiddleName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Authors[0].LastName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Authors[0].Suffix)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Authors[0].ContactEmail)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Authors[0].ContactPhoneNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Authors[0].Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Authors[0].WebsiteURL)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Authors[0].DateCreated)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Authors[0].DateUpdated)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.Authors) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.FirstName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MiddleName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LastName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Suffix)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ContactEmail)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ContactPhoneNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.WebsiteURL)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateCreated)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateUpdated)
+            </td>
+            <td>
+                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+<p>
+    <a class="btn btn-success" asp-page="Create">Create New Author</a>
+</p>

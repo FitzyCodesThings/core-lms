@@ -7,19 +7,20 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using CoreLMS.Core.Entities;
 using CoreLMS.Persistence;
+using CoreLMS.Core.Interfaces;
 
 namespace CoreLMS.Web.Areas.Admin.Pages.Courses
 {
     public class DetailsModel : PageModel
     {
-        private readonly CoreLMS.Persistence.AppDbContext _context;
+        private readonly ICourseService courseService;
 
-        public DetailsModel(CoreLMS.Persistence.AppDbContext context)
-        {
-            _context = context;
+        public DetailsModel(ICourseService courseService)
+        {   
+            this.courseService = courseService;
         }
 
-        public Course Course { get; set; }
+        public CourseViewModel Course { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -28,7 +29,18 @@ namespace CoreLMS.Web.Areas.Admin.Pages.Courses
                 return NotFound();
             }
 
-            Course = await _context.Courses.FirstOrDefaultAsync(m => m.Id == id);
+            var dbCourse = await courseService.GetCourseAsync(id.Value);
+
+            Course = new CourseViewModel
+            {
+                Id = dbCourse.Id,
+                DateCreated = dbCourse.DateCreated,
+                DateUpdated = dbCourse.DateUpdated,
+                Name = dbCourse.Name,
+                Description = dbCourse.Description,
+                CourseType = dbCourse.CourseType,
+                CourseImageURL = dbCourse.CourseImageURL
+            };
 
             if (Course == null)
             {

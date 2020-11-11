@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using Tynamix.ObjectFiller;
 using Xunit;
 
-namespace CoreLMS.Tests.Services
+namespace CoreLMS.Tests.Services.Authors
 {
     public partial class AuthorServiceTests
     {
