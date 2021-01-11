@@ -17,7 +17,7 @@ namespace CoreLMS.Application.Services
 
         private void ValidateCourseOnUpdate(Course course)
         {
-            // TODO Turn "minimum course count" back on 
+            // TODO Turn "minimum course lesson count" back on 
             ModelValidator.ValidateModel(course);
             //ValidateCourseHasAtLeastOneLesson(course);
         }

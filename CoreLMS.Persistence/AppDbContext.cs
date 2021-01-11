@@ -20,7 +20,9 @@ namespace CoreLMS.Persistence
         public AppDbContext(IConfiguration configuration)
         {
             this.configuration = configuration;
-            this.Database.Migrate();
+
+            // TODO GET THIS OUTTA HERE //
+            //this.Database.Migrate();
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

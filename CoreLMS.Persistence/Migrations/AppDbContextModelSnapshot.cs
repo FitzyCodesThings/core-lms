@@ -15,16 +15,16 @@ namespace CoreLMS.Persistence.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.8")
+                .UseIdentityColumns()
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("ProductVersion", "3.1.8");
 
             modelBuilder.Entity("CoreLMS.Core.Entities.Author", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .UseIdentityColumn();
 
                     b.Property<string>("ContactEmail")
                         .IsRequired()
@@ -87,7 +87,7 @@ namespace CoreLMS.Persistence.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .UseIdentityColumn();
 
                     b.Property<string>("CourseImageURL")
                         .HasColumnType("nvarchar(max)");
@@ -121,7 +121,7 @@ namespace CoreLMS.Persistence.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .UseIdentityColumn();
 
                     b.Property<int>("CourseId")
                         .HasColumnType("int");
@@ -162,7 +162,7 @@ namespace CoreLMS.Persistence.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .UseIdentityColumn();
 
                     b.Property<int>("CourseLessonId")
                         .HasColumnType("int");
@@ -202,6 +202,10 @@ namespace CoreLMS.Persistence.Migrations
                         .HasForeignKey("CourseLessonId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Author");
+
+                    b.Navigation("CourseLesson");
                 });
 
             modelBuilder.Entity("CoreLMS.Core.Entities.CourseLesson", b =>
@@ -211,6 +215,8 @@ namespace CoreLMS.Persistence.Migrations
                         .HasForeignKey("CourseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Course");
                 });
 
             modelBuilder.Entity("CoreLMS.Core.Entities.CourseLessonAttachment", b =>
@@ -220,6 +226,25 @@ namespace CoreLMS.Persistence.Migrations
                         .HasForeignKey("CourseLessonId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("CourseLesson");
+                });
+
+            modelBuilder.Entity("CoreLMS.Core.Entities.Author", b =>
+                {
+                    b.Navigation("CourseLessons");
+                });
+
+            modelBuilder.Entity("CoreLMS.Core.Entities.Course", b =>
+                {
+                    b.Navigation("CourseLessons");
+                });
+
+            modelBuilder.Entity("CoreLMS.Core.Entities.CourseLesson", b =>
+                {
+                    b.Navigation("Authors");
+
+                    b.Navigation("CourseLessonAttachments");
                 });
 #pragma warning restore 612, 618
         }
